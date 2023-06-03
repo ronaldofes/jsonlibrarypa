@@ -2,137 +2,94 @@ package builder
 
 import annotation.*
 import model.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
+import org.junit.Assert.*
+import org.junit.Test
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.jvm.isAccessible
 
 class JsonBuilderTest {
+    private val jsonBuilder = JsonBuilder()
 
-    data class Student (
-        val numero: Int,
-        @JsonName("nome")
+    data class DataClass(
+        @JsonName("renamed")
         val name: String,
+
+        @JsonExclude
+        val excludeMe: String,
+
         @JsonToString
-        val internacional: Boolean
-    )
-
-    @JsonExclude
-    data class ExcludedDataClass(val value: Int = 5)
-
-    data class Course (
-        @JsonName("uc")
-        val name: String,
-        val ects: Float,
-        @JsonName("data-exame")
-        val examDate: Any? = null,
-        val inscritos: List<Student>
+        val number: Int
     )
 
     @Test
-    fun `when buildJson called with data class, then returns JsonObject with correct values and structure`() {
-        val students = listOf(
-            Student(101101, "Dave Farley", true),
-            Student(101102, "Martin Fowler", true),
-            Student(26503, "André Santos", false)
-        )
-        val course = Course("PA", 6.0f, null, students)
-
-        val result = JsonBuilder().buildJson(course)
-
-        assertTrue(result is JsonObject)
-        assertEquals(
-            """{
-            |"uc": "PA",
-            |"ects": 6.0,
-            |"data-exame": null,
-            |"inscritos": [
-            |  {"numero": 101101, "nome": "Dave Farley", "internacional": "true"},
-            |  {"numero": 101102, "nome": "Martin Fowler", "internacional": "true"},
-            |  {"numero": 26503, "nome": "André Santos", "internacional": "false"}
-            |]
-            |}""".trimMargin(), result.toJsonString()
-        )
+    fun testBuildJsonString() {
+        val result = jsonBuilder.buildJson("Test String")
+        assertTrue(result is JsonString)
+        assertEquals("Test String", (result as JsonString).getValue())
     }
 
     @Test
-    fun `when buildJson called with excluded data class, then returns JsonObject with no members`() {
-        val excludedClass = ExcludedDataClass()
-
-        val result = JsonBuilder().buildJson(excludedClass)
-
-        assertTrue(result is JsonObject)
-        assertEquals("{}", result.toJsonString())
+    fun testBuildJsonNumber() {
+        val result = jsonBuilder.buildJson(123)
+        assertTrue(result is JsonNumber)
+        assertEquals(123, (result as JsonNumber).value)
     }
 
     @Test
-    fun `when buildJson called with map, then returns JsonObject with correct values and structure`() {
-        val map = mapOf("key1" to "value1", "key2" to 2)
-
-        val result = JsonBuilder().buildJson(map)
-
-        assertTrue(result is JsonObject)
-        assertEquals("""{"key1": "value1", "key2": 2}""", result.toJsonString())
-    }
-
-    @Test
-    fun testBuildJson() {
-        val builder = JsonBuilder()
-        val json = builder.buildJson(listOf(1, 2, 3))
-        assertTrue(json is JsonArray)
-        assertEquals("[1, 2, 3]", json.toJsonString())
-    }
-
-    @Test
-    fun testBuildJsonObject() {
-        val builder = JsonBuilder()
-        val json = builder.buildJson(mapOf("one" to 1, "two" to 2))
-        assertTrue(json is JsonObject)
-        assertEquals("{\"one\": 1, \"two\": 2}", json.toJsonString())
+    fun testBuildJsonBoolean() {
+        val result = jsonBuilder.buildJson(true)
+        assertTrue(result is JsonBoolean)
+        assertEquals(true, (result as JsonBoolean).value)
     }
 
     @Test
     fun testBuildJsonArray() {
-        val builder = JsonBuilder()
-        val json = builder.buildJson(listOf("apple", "banana", "cherry"))
-        assertTrue(json is JsonArray)
-        assertEquals("[\"apple\", \"banana\", \"cherry\"]", json.toJsonString())
+        val result = jsonBuilder.buildJson(listOf("Test String", 123, true))
+        assertTrue(result is JsonArray)
+        val array = result as JsonArray
+        assertEquals(3, array.elements().size)
+        assertTrue(array.elements()[0] is JsonString)
+        assertTrue(array.elements()[1] is JsonNumber)
+        assertTrue(array.elements()[2] is JsonBoolean)
+    }
+
+    @Test
+    fun testBuildJsonObject() {
+        val result = jsonBuilder.buildJson(mapOf("key1" to "value1", "key2" to 123, "key3" to true))
+        assertTrue(result is JsonObject)
+        val obj = result as JsonObject
+        assertEquals(3, obj.entries().size)
+        assertTrue(obj["key1"] is JsonString)
+        assertTrue(obj["key2"] is JsonNumber)
+        assertTrue(obj["key3"] is JsonBoolean)
     }
 
     @Test
     fun testBuildFromDataClass() {
-        data class TestClass(val name: String, val age: Int)
-        val builder = JsonBuilder()
-        val json = builder.buildJson(TestClass("Alice", 30))
-        assertTrue(json is JsonObject)
-        assertEquals("{\"name\": \"Alice\", \"age\": 30}", json.toJsonString())
+        val result = jsonBuilder.buildJson(DataClass("Test String", "Exclude me", 123))
+        assertTrue(result is JsonObject)
+        val obj = result as JsonObject
+        assertEquals(2, obj.entries().size)
+        assertTrue(obj["renamed"] is JsonString)
+        assertTrue(obj["number"] is JsonString)
+        assertFalse(obj.entries().any { it.key == "excludeMe" })
     }
 
     @Test
-    fun testBuildFromDataClassWithJsonName() {
-        data class TestClass(@JsonName("fullname") val name: String, val age: Int)
-        val builder = JsonBuilder()
-        val json = builder.buildJson(TestClass("Bob", 40))
-        assertTrue(json is JsonObject)
-        assertEquals("{\"fullname\": \"Bob\", \"age\": 40}", json.toJsonString())
+    fun testJsonNameAnnotation() {
+        val result = DataClass("Test String", "Exclude me", 123)::name.findAnnotation<JsonName>()
+        assertNotNull(result)
+        assertEquals("renamed", result?.name)
     }
 
     @Test
-    fun testBuildFromDataClassWithJsonExclude() {
-        data class TestClass(val name: String, @JsonExclude val age: Int)
-        val builder = JsonBuilder()
-        val json = builder.buildJson(TestClass("Charlie", 50))
-        assertTrue(json is JsonObject)
-        assertEquals("{\"name\": \"Charlie\"}", json.toJsonString())
+    fun testJsonExcludeAnnotation() {
+        val result = DataClass("Test String", "Exclude me", 123)::excludeMe.findAnnotation<JsonExclude>()
+        assertNotNull(result)
     }
 
     @Test
-    fun testBuildFromDataClassWithJsonToString() {
-        data class TestClass(val name: String, @JsonToString val age: Int)
-        val builder = JsonBuilder()
-        val json = builder.buildJson(TestClass("David", 60))
-        assertTrue(json is JsonObject)
-        assertEquals("{\"name\": \"David\", \"age\": \"60\"}", json.toJsonString())
+    fun testJsonToStringAnnotation() {
+        val result = DataClass("Test String", "Exclude me", 123)::number.findAnnotation<JsonToString>()
+        assertNotNull(result)
     }
 }

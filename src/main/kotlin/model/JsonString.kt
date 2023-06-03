@@ -4,6 +4,9 @@ class JsonString(private val value: String) : JsonValue {
     override fun accept(visitor: Visitor) {visitor.visit(this) }
     fun getValue(): String = value
     override fun toJsonString() : String { return "\"$value\"" }
+    override fun toString(): String {
+        return toJsonString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -2,7 +2,6 @@ package builder
 
 import annotation.*
 import model.*
-import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.isAccessible
