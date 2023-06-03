@@ -56,13 +56,11 @@ class ArrayStructureVerificationVisitorTest {
             "ects" to JsonNumber(0),
             "data-exame" to JsonNull(),
             "inscritos" to JsonArray(mutableListOf(
-                JsonObject(mutableMapOf(
-                    "numero" to JsonString(""),
-                    "nome" to JsonString(""),
-                    "internacional" to JsonBoolean(false)
+                JsonString(""),
+                JsonString(""),
+                JsonBoolean(false)
                 ))
             ))
-        ))
         val visitor = ArrayStructureVerificationVisitor(structure)
         json.accept(visitor)
         assertFalse(visitor.isValid)
