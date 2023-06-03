@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.willowtreeapps.assertk:assertk-jvm:0.25">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/willowtreeapps/assertk/assertk-jvm/0.25/assertk-jvm-0.25.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/willowtreeapps/assertk/assertk-jvm/0.25/assertk-jvm-0.25-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/willowtreeapps/assertk/assertk-jvm/0.25/assertk-jvm-0.25-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

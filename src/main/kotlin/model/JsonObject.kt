@@ -1,22 +1,15 @@
 package model
 
-class JsonObject(private val map: MutableMap<String, JsonValue>) : JsonValue {
-    override fun accept(visitor: Visitor) {
-        visitor.visit(this)
-        map.values.forEach { it.accept(visitor) }
-    }
+class JsonObject(private val members: MutableMap<String, JsonValue>) : JsonValue {
+    operator fun get(key: String): JsonValue? = members[key]
+    operator fun set(key: String, value: JsonValue) { members[key] = value }
+    override fun accept(visitor: Visitor) { visitor.visit(this) }
+    fun entries() = members.entries
 
-    // Convert JsonObject to String
-    override fun toString() : String {
-        val jsonString = StringBuilder()
-        jsonString.append("{ ")
-        map.forEach { (key, value) ->
-            jsonString.append("\"$key\": $value, ")
+    override fun toJsonString(): String {
+        if(members.isEmpty()) return "{ }"
+        return members.entries.joinToString(separator = ", ", prefix = "{", postfix = "}") {
+            "\"${it.key}\": ${it.value.toJsonString()}"
         }
-        if (map.isNotEmpty()) {
-            jsonString.delete(jsonString.length - 2, jsonString.length) // Remove a última vírgula e espaço
-        }
-        jsonString.append(" }")
-        return jsonString.toString()
     }
 }
