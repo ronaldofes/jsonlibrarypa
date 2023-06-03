@@ -33,11 +33,11 @@ O Maven compilará seu código, executará os testes e fornecerá um resumo dos 
 
 #### A biblioteca fornece as seguintes anotações:
 
-**JsonExclude**: Use esta anotação em qualquer propriedade de uma data class que você não deseja incluir na saída JSON.
+**@JsonExclude**: Use esta anotação em qualquer propriedade de uma data class que você não deseja incluir na saída JSON.
 
-**JsonName**: Use esta anotação para especificar um nome personalizado para a propriedade na saída JSON. Por exemplo, se você tem uma propriedade chamada firstName, mas deseja que ela apareça como first_name na saída JSON, você pode usar a anotação da seguinte forma: @JsonName("first_name").
+**@JsonName**: Use esta anotação para especificar um nome personalizado para a propriedade na saída JSON. Por exemplo, se você tem uma propriedade chamada firstName, mas deseja que ela apareça como first_name na saída JSON, você pode usar a anotação da seguinte forma: @JsonName("first_name").
 
-**JsonToString**: Use esta anotação em uma propriedade numérica se você deseja que a saída JSON represente o número como uma string.
+**@JsonToString**: Use esta anotação em uma propriedade numérica se você deseja que a saída JSON represente o número como uma string.
 
 ## Transformando um objeto em JSON
 
