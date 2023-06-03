@@ -10,6 +10,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="backup" target="17" />
+      <module name="final-project-library" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
