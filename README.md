@@ -1,5 +1,3 @@
-# README
-
 ## Sobre a biblioteca
 
 Esta é uma biblioteca de manipulação de JSON em Kotlin. Ela permite que os usuários trabalhem com JSON de uma forma que se alinha com os conceitos fundamentais da linguagem Kotlin. A biblioteca suporta a leitura, escrita e manipulação de JSON utilizando uma variedade de classes, interfaces e anotações.
