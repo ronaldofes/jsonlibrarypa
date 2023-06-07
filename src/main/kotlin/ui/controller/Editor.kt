@@ -5,11 +5,6 @@ import java.awt.*
 import java.awt.event.*
 import javax.swing.*
 
-
-fun main() {
-    Editor().open()
-}
-
 class Editor {
     private val modelo = Modelo("PA", "6.0", "N/A")
     private val inscritosWidgets = mutableMapOf<String, Component>()
