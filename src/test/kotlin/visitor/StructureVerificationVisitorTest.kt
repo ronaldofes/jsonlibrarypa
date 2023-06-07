@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 
-class StructureVerificationVisitorTest {
+public class StructureVerificationVisitorTest {
 
     private val json: JsonObject = JsonObject(mutableMapOf(
         "uc" to JsonString("PA"),

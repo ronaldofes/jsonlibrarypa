@@ -1,16 +1,11 @@
 package model
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Before
-import org.junit.Test
 
-class JsonObjectTest {
-    private lateinit var jsonObject: JsonObject
 
-    @Before
-    fun setUp() {
-        jsonObject = JsonObject(mutableMapOf())
-    }
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
+
+public class JsonObjectTest {
+    private var jsonObject: JsonObject = JsonObject(mutableMapOf())
 
     @Test
     fun testGetWhenKeyExistsForBooleanValue() {

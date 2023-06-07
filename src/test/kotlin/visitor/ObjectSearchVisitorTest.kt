@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import model.*
 
-class ObjectSearchVisitorTest {
+public class ObjectSearchVisitorTest {
 
     private lateinit var json: JsonObject
     private lateinit var visitor: ObjectSearchVisitor

@@ -2,18 +2,12 @@ package model
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
 import model.*
+import org.junit.jupiter.api.Test
 
 
 class JsonArrayTest {
-    private lateinit var jsonArray: JsonArray
-
-    @Before
-    fun setUp() {
-        jsonArray = JsonArray(mutableListOf())
-    }
+    private var jsonArray: JsonArray = JsonArray(mutableListOf())
 
     @Test
     fun testGet() {

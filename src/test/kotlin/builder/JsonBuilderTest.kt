@@ -2,11 +2,11 @@ package builder
 
 import annotation.*
 import model.*
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import kotlin.reflect.full.findAnnotation
 
-class JsonBuilderTest {
+public class JsonBuilderTest {
     private val jsonBuilder = JsonBuilder()
 
     data class DataClass(
