@@ -5,10 +5,10 @@ import annotation.JsonToString
 
 data class Inscrito(
 
-    @JsonName("nome_inscrito")
+    @JsonName("nome")
     var nome: String,
 
-    @JsonName("numero_inscrito")
+    @JsonName("numero")
     @JsonToString
     var numero: String,
 
