@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.Date
 
-public class JsonFactoryTest {
+class JsonFactoryTest {
     private val builder = JsonBuilder()
     enum class TypeLocation { INT, EU, PORT }
 

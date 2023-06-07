@@ -4,7 +4,7 @@ package model
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-public class JsonObjectTest {
+class JsonObjectTest {
     private var jsonObject: JsonObject = JsonObject(mutableMapOf())
 
     @Test

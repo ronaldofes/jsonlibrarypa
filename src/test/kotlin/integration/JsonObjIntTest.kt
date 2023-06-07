@@ -3,7 +3,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import model.*
 
-public class JsonObjIntTest {
+class JsonObjIntTest {
 
     private lateinit var jsonObject: JsonObject
 

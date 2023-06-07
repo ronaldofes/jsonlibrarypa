@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse
 
-public class ArrayStructureVerificationVisitorTest {
+class ArrayStructureVerificationVisitorTest {
 
     private val json: JsonObject = JsonObject(mutableMapOf(
         "uc" to JsonString("PA"),
