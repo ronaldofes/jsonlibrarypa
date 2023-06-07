@@ -50,7 +50,6 @@ class Editor {
         srcArea.text = text
     }
 
-
     private fun testPanel(): JPanel =
         JPanel(GridBagLayout()).apply {
             val gbc = GridBagConstraints().apply {
@@ -165,40 +164,10 @@ class Editor {
             }
             gbc.weighty = 0.4
             add(scrollPaneCursos, gbc)
-
-//
-//            // menu
-//            addMouseListener(object : MouseAdapter() {
-//                override fun mouseClicked(e: MouseEvent) {
-//                    if (SwingUtilities.isRightMouseButton(e)) {
-//                        val menu = JPopupMenu("Message")
-//                        val add = JButton("add")
-//                        add.addActionListener {
-//                            val text = JOptionPane.showInputDialog("text")
-//                            add(testWidget(text, "?"))
-//                            menu.isVisible = false
-//                            revalidate()
-//                            frame.repaint()
-//                        }
-//                        val del = JButton("delete all")
-//                        del.addActionListener {
-//                            components.forEach {
-//                                remove(it)
-//                            }
-//                            menu.isVisible = false
-//                            revalidate()
-//                            frame.repaint()
-//                        }
-//                        menu.add(add);
-//                        menu.add(del)
-//                        menu.show(this@apply, 100, 100);
-//                    }
-//                }
-//            })
         }
 
 
-    fun inscritoWidget(inscrito: Inscrito): JPanel =
+    private fun inscritoWidget(inscrito: Inscrito): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
@@ -233,7 +202,7 @@ class Editor {
             inscritosWidgets[inscrito.nome] = this
         }
 
-    fun cursoWidget(curso: Curso): JPanel =
+    private fun cursoWidget(curso: Curso): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
@@ -252,7 +221,7 @@ class Editor {
             cursosWidgets[curso.nome] = this
         }
 
-    fun testWidget(key: String, value: String): JPanel =
+    private fun testWidget(key: String, value: String): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
