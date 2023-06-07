@@ -1,6 +1,7 @@
 package ui.view
 
 import builder.JsonBuilder
+import model.BeautyJson
 import ui.model.Curso
 import ui.model.Inscrito
 import ui.model.Modelo
@@ -43,7 +44,7 @@ class Editor {
                 val returnValue = fileChooser.showSaveDialog(null)
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     val selectedFile = fileChooser.selectedFile
-                    val json = builder.buildJson(modelo).toJsonString()
+                    val json = BeautyJson.build(builder.buildJson(modelo))
                     selectedFile.writeText(json)
                 }
             }
@@ -53,7 +54,7 @@ class Editor {
 
        val showJsonButton = JButton("Mostrar JSON").apply {
             addActionListener {
-                val json = builder.buildJson(modelo).toJsonString()
+                val json = BeautyJson.build(builder.buildJson(modelo))
                 srcArea.text = json
             }
             maximumSize = Dimension(right.width, height/10)
