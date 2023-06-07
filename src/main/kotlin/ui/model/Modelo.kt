@@ -4,14 +4,14 @@ import annotation.JsonName
 import annotation.JsonToString
 
 data class Modelo(
-    @JsonName("uc_modelo")
+    @JsonName("uc")
     var uc: String,
 
-    @JsonName("ects_modelo")
+    @JsonName("ects")
     @JsonToString
     var ects: String,
 
-    @JsonName("exame_modelo")
+    @JsonName("exame")
     var exame: String,
 
     @JsonName("inscritos")

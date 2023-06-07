@@ -14,6 +14,8 @@ class Editor {
     private val inscritosWidgets = mutableMapOf<String, Component>()
     private val cursosWidgets = mutableMapOf<String, Component>()
     private val builder = JsonBuilder()
+    private val ordering = listOf("uc", "ects", "exame", "inscritos", "cursos" )
+    private val beauty = BeautyJson(ordering)
 
 
     private val srcArea = JTextArea().apply {
@@ -44,7 +46,7 @@ class Editor {
                 val returnValue = fileChooser.showSaveDialog(null)
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     val selectedFile = fileChooser.selectedFile
-                    val json = BeautyJson.build(builder.buildJson(modelo))
+                    val json = beauty.build(builder.buildJson(modelo))
                     selectedFile.writeText(json)
                 }
             }
@@ -54,7 +56,7 @@ class Editor {
 
        val showJsonButton = JButton("Mostrar JSON").apply {
             addActionListener {
-                val json = BeautyJson.build(builder.buildJson(modelo))
+                val json = beauty.build(builder.buildJson(modelo))
                 srcArea.text = json
             }
             maximumSize = Dimension(right.width, height/10)

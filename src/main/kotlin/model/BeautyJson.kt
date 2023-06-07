@@ -1,7 +1,7 @@
 package model
 
 
-object BeautyJson: Visitor {
+class BeautyJson (private val propertyOrder: List<String> = emptyList()): Visitor {
     private val builder = StringBuilder()
     private var indent = 0
 
@@ -20,7 +20,20 @@ object BeautyJson: Visitor {
         builder.append("{\n")
         indent++
 
-        val iterator = jsonObject.getPropertiesJson().entries.iterator()
+        val properties = jsonObject.getPropertiesJson().entries.toList()
+
+        val sortedProperties = properties.sortedWith(Comparator { e1, e2 ->
+            val index1 = propertyOrder.indexOf(e1.key)
+            val index2 = propertyOrder.indexOf(e2.key)
+            when {
+                index1 == -1 && index2 == -1 -> 0
+                index1 == -1 -> 1
+                index2 == -1 -> -1
+                else -> index1.compareTo(index2)
+            }
+        })
+
+        val iterator = sortedProperties.iterator()
         while (iterator.hasNext()) {
             val (key, value) = iterator.next()
 
