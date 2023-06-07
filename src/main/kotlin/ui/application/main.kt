@@ -1,6 +1,6 @@
 package ui.application
 
-import Editor
+import ui.controller.Editor
 
 fun main() {
         Editor().open()

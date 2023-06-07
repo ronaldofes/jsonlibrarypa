@@ -1,3 +1,5 @@
+package ui.controller
+
 import ui.model.Curso
 import ui.model.Inscrito
 import ui.model.Modelo
@@ -10,11 +12,11 @@ class Editor {
     private val inscritosWidgets = mutableMapOf<String, Component>()
     private val cursosWidgets = mutableMapOf<String, Component>()
 
-    val srcArea = JTextArea().apply {
+    private val srcArea = JTextArea().apply {
         tabSize = 2
     }
 
-    val frame = JFrame("Josue - JSON Object Editor").apply {
+    private val frame = JFrame("Josue - JSON Object ui.controller.Editor").apply {
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         layout = GridLayout(0, 2)
         size = Dimension(800, 1000)
@@ -89,20 +91,24 @@ class Editor {
                     addActionListener {
                         val nome = JOptionPane.showInputDialog("Nome do Inscrito a remover")
                         if (nome != null) {
-                        val inscrito = modelo.inscritos.find { it.nome == nome }
-                        if (inscrito != null) {
-                            modelo.inscritos.remove(inscrito)
-                            val widgetToRemove = inscritosWidgets[nome]
-                            inscritosWidgetsPanel.remove(widgetToRemove)
-                            inscritosWidgets.remove(nome)
-                            inscritosWidgetsPanel.revalidate()
-                            inscritosWidgetsPanel.repaint()
-                            updateTextArea()
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Inscrito não encontrado! Digite o nome exato do Inscrito")
+                            val inscrito = modelo.inscritos.find { it.nome == nome }
+                            if (inscrito != null) {
+                                modelo.inscritos.remove(inscrito)
+                                val widgetToRemove = inscritosWidgets[inscrito.nome]
+                                if (widgetToRemove != null) {
+                                    inscritosWidgetsPanel.remove(widgetToRemove)
+                                    inscritosWidgets.remove(inscrito.nome)
+                                    inscritosWidgetsPanel.revalidate()
+                                    inscritosWidgetsPanel.repaint()
+                                    updateTextArea()
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Inscrito não encontrado! Digite o nome exato do Inscrito")
+                            }
                         }
-                    }}
+                    }
                 })
+
 
                 add(inscritosWidgetsPanel)
             }
@@ -143,12 +149,14 @@ class Editor {
                             val cursoObj = modelo.cursos.find { it.nome == cursoNome }
                             if (cursoObj != null) {
                                 modelo.cursos.remove(cursoObj)
-                                val widgetToRemove = cursosWidgets[cursoNome]
-                                cursosWidgetsPanel.remove(widgetToRemove)
-                                cursosWidgets.remove(cursoNome)
-                                cursosWidgetsPanel.revalidate()
-                                cursosWidgetsPanel.repaint()
-                                updateTextArea()
+                                val widgetToRemove = cursosWidgets[cursoObj.nome]
+                                if (widgetToRemove != null) {
+                                    cursosWidgetsPanel.remove(widgetToRemove)
+                                    cursosWidgets.remove(cursoObj.nome)
+                                    cursosWidgetsPanel.revalidate()
+                                    cursosWidgetsPanel.repaint()
+                                    updateTextArea()
+                                }
                             } else {
                                 JOptionPane.showMessageDialog(frame, "Curso não encontrado! Digite o nome exato do Curso")
                             }
@@ -177,7 +185,11 @@ class Editor {
             val nomeField = JTextField(inscrito.nome)
             nomeField.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
+                    val oldNome = inscrito.nome
                     inscrito.nome = nomeField.text
+                    // Atualize a chave no mapa dos widgets.
+                    inscritosWidgets.remove(oldNome)
+                    inscritosWidgets[inscrito.nome] = this@apply
                     updateTextArea()
                 }
             })
@@ -186,6 +198,7 @@ class Editor {
             val numeroField = JTextField(inscrito.numero)
             numeroField.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
+
                     inscrito.numero = numeroField.text
                     updateTextArea()
                 }
@@ -212,7 +225,10 @@ class Editor {
             val cursoField = JTextField(curso.nome)
             cursoField.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
+                    val oldNome = curso.nome
                     curso.nome = cursoField.text
+                    cursosWidgets.remove(oldNome)
+                    cursosWidgets[curso.nome] = this@apply
                     updateTextArea()
                 }
             })
@@ -220,6 +236,8 @@ class Editor {
 
             cursosWidgets[curso.nome] = this
         }
+
+
 
     private fun testWidget(key: String, value: String): JPanel =
         JPanel().apply {
