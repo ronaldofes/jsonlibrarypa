@@ -51,8 +51,17 @@ class Editor {
             maximumSize = Dimension(right.width, height/10)
         }
 
+       val showJsonButton = JButton("Mostrar JSON").apply {
+            addActionListener {
+                val json = builder.buildJson(modelo).toJsonString()
+                srcArea.text = json
+            }
+            maximumSize = Dimension(right.width, height/10)
+        }
+
         right.add(JScrollPane(srcArea), BorderLayout.CENTER)
         right.add(exportButton, BorderLayout.PAGE_END)
+        right.add(showJsonButton, BorderLayout.PAGE_START)
         add(right)
     }
 
