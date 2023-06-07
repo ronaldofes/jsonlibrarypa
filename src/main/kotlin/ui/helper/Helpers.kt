@@ -94,6 +94,7 @@ class Editor {
                 add(JButton("Remover Inscrito Pelo Nome").apply {
                     addActionListener {
                         val nome = JOptionPane.showInputDialog("Nome do Inscrito a remover")
+                        if (nome != null) {
                         val inscrito = modelo.inscritos.find { it.nome == nome }
                         if (inscrito != null) {
                             modelo.inscritos.remove(inscrito)
@@ -106,7 +107,7 @@ class Editor {
                         } else {
                             JOptionPane.showMessageDialog(frame, "Inscrito não encontrado! Digite o nome exato do Inscrito")
                         }
-                    }
+                    }}
                 })
 
                 add(inscritosWidgetsPanel)
