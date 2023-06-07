@@ -1,3 +1,6 @@
+import ui.model.Curso
+import ui.model.Inscrito
+import ui.model.Modelo
 import java.awt.*
 import java.awt.event.*
 import javax.swing.*
@@ -8,9 +11,13 @@ fun main() {
 }
 
 class Editor {
-
+    private val modelo = Modelo("PA", "6.0", "N/A")
     private val inscritosWidgets = mutableMapOf<String, Component>()
     private val cursosWidgets = mutableMapOf<String, Component>()
+
+    val srcArea = JTextArea().apply {
+        tabSize = 2
+    }
 
     val frame = JFrame("Josue - JSON Object Editor").apply {
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
@@ -28,8 +35,6 @@ class Editor {
 
         val right = JPanel()
         right.layout = GridLayout()
-        val srcArea = JTextArea()
-        srcArea.tabSize = 2
         srcArea.text = "TODO"
         right.add(srcArea)
         add(right)
@@ -39,7 +44,19 @@ class Editor {
         frame.isVisible = true
     }
 
-    fun testPanel(): JPanel =
+    private fun updateTextArea() {
+        var text = "UC: ${modelo.uc}, ECTS: ${modelo.ects}, Exame: ${modelo.exame}\n"
+        modelo.inscritos.forEach { inscrito ->
+            text += "Inscrito: ${inscrito.nome}, Número: ${inscrito.numero}, Internacional: ${inscrito.internacional}\n"
+        }
+        modelo.cursos.forEach { curso ->
+            text += "Curso: ${curso.nome}\n"
+        }
+        srcArea.text = text
+    }
+
+
+    private fun testPanel(): JPanel =
         JPanel(GridBagLayout()).apply {
             val gbc = GridBagConstraints().apply {
                 fill = GridBagConstraints.BOTH
@@ -65,28 +82,27 @@ class Editor {
                         val nome = JOptionPane.showInputDialog("Nome do Inscrito")
                         val numero = JOptionPane.showInputDialog("Número do Inscrito")
                         val internacional = JOptionPane.showConfirmDialog(null, "É Internacional?", "Internacional", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION
-                        inscritosWidgetsPanel.add(inscritoWidget(nome, numero, internacional))
+                        val inscrito = Inscrito(nome, numero, internacional)
+                        modelo.inscritos.add(inscrito)
+                        inscritosWidgetsPanel.add(inscritoWidget(inscrito))
                         inscritosWidgetsPanel.revalidate()
                         inscritosWidgetsPanel.repaint()
-                    }
-                })
-                add(JButton("Remover todos os Inscritos").apply {
-                    addActionListener {
-                        inscritosWidgetsPanel.removeAll()
-                        inscritosWidgetsPanel.revalidate()
-                        inscritosWidgetsPanel.repaint()
+                        updateTextArea()
                     }
                 })
 
                 add(JButton("Remover Inscrito Pelo Nome").apply {
                     addActionListener {
                         val nome = JOptionPane.showInputDialog("Nome do Inscrito a remover")
-                        val widgetToRemove = inscritosWidgets[nome]
-                        if (widgetToRemove != null) {
+                        val inscrito = modelo.inscritos.find { it.nome == nome }
+                        if (inscrito != null) {
+                            modelo.inscritos.remove(inscrito)
+                            val widgetToRemove = inscritosWidgets[nome]
                             inscritosWidgetsPanel.remove(widgetToRemove)
                             inscritosWidgets.remove(nome)
                             inscritosWidgetsPanel.revalidate()
                             inscritosWidgetsPanel.repaint()
+                            updateTextArea()
                         } else {
                             JOptionPane.showMessageDialog(frame, "Inscrito não encontrado! Digite o nome exato do Inscrito")
                         }
@@ -113,31 +129,34 @@ class Editor {
                 alignmentY = Component.TOP_ALIGNMENT
                 add(JButton("Adicionar Curso").apply {
                     addActionListener {
-                        val curso = JOptionPane.showInputDialog("Nome do Curso")
-                        cursosWidgetsPanel.add(cursoWidget(curso))
-                        cursosWidgetsPanel.revalidate()
-                        cursosWidgetsPanel.repaint()
-                    }
-                })
-                add(JButton("Remover todos os Cursos").apply {
-                    addActionListener {
-                        cursosWidgetsPanel.removeAll()
-                        cursosWidgetsPanel.revalidate()
-                        cursosWidgetsPanel.repaint()
+                        val cursoNome = JOptionPane.showInputDialog("Nome do Curso")
+                        if (cursoNome != null) {
+                            val curso = Curso(cursoNome)
+                            modelo.cursos.add(curso)
+                            cursosWidgetsPanel.add(cursoWidget(curso))
+                            cursosWidgetsPanel.revalidate()
+                            cursosWidgetsPanel.repaint()
+                            updateTextArea()
+                        }
                     }
                 })
 
                 add(JButton("Remover Curso Pelo Nome").apply {
                     addActionListener {
-                        val curso = JOptionPane.showInputDialog("Nome do Curso a remover")
-                        val widgetToRemove = cursosWidgets[curso]
-                        if (widgetToRemove != null) {
-                            cursosWidgetsPanel.remove(widgetToRemove)
-                            cursosWidgets.remove(curso)
-                            cursosWidgetsPanel.revalidate()
-                            cursosWidgetsPanel.repaint()
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Curso não encontrado! Digite o nome exato do Curso")
+                        val cursoNome = JOptionPane.showInputDialog("Nome do Curso a remover")
+                        if (cursoNome != null) {
+                            val cursoObj = modelo.cursos.find { it.nome == cursoNome }
+                            if (cursoObj != null) {
+                                modelo.cursos.remove(cursoObj)
+                                val widgetToRemove = cursosWidgets[cursoNome]
+                                cursosWidgetsPanel.remove(widgetToRemove)
+                                cursosWidgets.remove(cursoNome)
+                                cursosWidgetsPanel.revalidate()
+                                cursosWidgetsPanel.repaint()
+                                updateTextArea()
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Curso não encontrado! Digite o nome exato do Curso")
+                            }
                         }
                     }
                 })
@@ -183,33 +202,58 @@ class Editor {
         }
 
 
-    fun inscritoWidget(nome: String, numero: String, internacional: Boolean): JPanel =
+    fun inscritoWidget(inscrito: Inscrito): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
             add(JLabel("Nome: "))
-            add(JTextField(nome))
+            val nomeField = JTextField(inscrito.nome)
+            nomeField.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    inscrito.nome = nomeField.text
+                    updateTextArea()
+                }
+            })
+            add(nomeField)
             add(JLabel("Número: "))
-            add(JTextField(numero))
+            val numeroField = JTextField(inscrito.numero)
+            numeroField.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    inscrito.numero = numeroField.text
+                    updateTextArea()
+                }
+            })
+            add(numeroField)
             add(JLabel("Internacional: "))
-            add(JCheckBox("", internacional))
+            val internacionalCheckBox = JCheckBox("", inscrito.internacional)
+            internacionalCheckBox.addItemListener {
+                inscrito.internacional = internacionalCheckBox.isSelected
+                updateTextArea()
+            }
+            add(internacionalCheckBox)
 
-            inscritosWidgets[nome] = this
-
+            inscritosWidgets[inscrito.nome] = this
         }
 
-    fun cursoWidget(curso: String): JPanel =
+    fun cursoWidget(curso: Curso): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
             add(JLabel("Curso: "))
-            add(JTextField(curso))
+            val cursoField = JTextField(curso.nome)
+            cursoField.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    curso.nome = cursoField.text
+                    updateTextArea()
+                }
+            })
+            add(cursoField)
 
-            cursosWidgets[curso] = this
+            cursosWidgets[curso.nome] = this
         }
 
     fun testWidget(key: String, value: String): JPanel =
@@ -222,7 +266,12 @@ class Editor {
             val text = JTextField(value)
             text.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
-                    println("perdeu foco: ${text.text}")
+                    when (key) {
+                        "UC" -> modelo.uc = text.text
+                        "ects" -> modelo.ects = text.text
+                        "exame" -> modelo.exame = text.text
+                    }
+                    updateTextArea()
                 }
             })
             add(text)
