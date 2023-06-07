@@ -35,7 +35,7 @@ class Editor {
 
         val right = JPanel()
         right.layout = GridLayout()
-        srcArea.text = "TODO"
+        srcArea.text = ""
         right.add(srcArea)
         add(right)
     }
@@ -79,8 +79,8 @@ class Editor {
                 alignmentY = Component.TOP_ALIGNMENT
                 add(JButton("Adicionar Inscrito").apply {
                     addActionListener {
-                        val nome = JOptionPane.showInputDialog("Nome do Inscrito")
-                        val numero = JOptionPane.showInputDialog("Número do Inscrito")
+                        val nome = JOptionPane.showInputDialog("Nome do Inscrito") ?: return@addActionListener
+                        val numero = JOptionPane.showInputDialog("Número do Inscrito") ?: return@addActionListener
                         val internacional = JOptionPane.showConfirmDialog(null, "É Internacional?", "Internacional", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION
                         val inscrito = Inscrito(nome, numero, internacional)
                         modelo.inscritos.add(inscrito)
