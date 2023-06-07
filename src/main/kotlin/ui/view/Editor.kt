@@ -1,5 +1,6 @@
-package ui.controller
+package ui.view
 
+import builder.JsonBuilder
 import ui.model.Curso
 import ui.model.Inscrito
 import ui.model.Modelo
@@ -11,12 +12,14 @@ class Editor {
     private val modelo = Modelo("PA", "6.0", "N/A")
     private val inscritosWidgets = mutableMapOf<String, Component>()
     private val cursosWidgets = mutableMapOf<String, Component>()
+    private val builder = JsonBuilder()
+
 
     private val srcArea = JTextArea().apply {
         tabSize = 2
     }
 
-    private val frame = JFrame("Josue - JSON Object ui.controller.Editor").apply {
+    private val frame = JFrame("JSON Builder").apply {
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         layout = GridLayout(0, 2)
         size = Dimension(800, 1000)
@@ -31,11 +34,29 @@ class Editor {
         add(left)
 
         val right = JPanel()
-        right.layout = GridLayout()
+        right.layout = BorderLayout()
         srcArea.text = ""
-        right.add(srcArea)
+
+        val exportButton = JButton("Exportar para JSON").apply {
+            addActionListener {
+                val fileChooser = JFileChooser()
+                val returnValue = fileChooser.showSaveDialog(null)
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    val selectedFile = fileChooser.selectedFile
+                    val json = builder.buildJson(modelo).toJsonString()
+                    selectedFile.writeText(json)
+                }
+            }
+
+            maximumSize = Dimension(right.width, height/10)
+        }
+
+        right.add(JScrollPane(srcArea), BorderLayout.CENTER)
+        right.add(exportButton, BorderLayout.PAGE_END)
         add(right)
     }
+
+
 
     fun open() {
         frame.isVisible = true

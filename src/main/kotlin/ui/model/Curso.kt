@@ -1,7 +1,8 @@
 package ui.model
 
-import java.util.UUID
+import annotation.JsonName
 
 data class Curso(
+    @JsonName("nome_curso")
     var nome: String
 )
